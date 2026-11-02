@@ -45,3 +45,71 @@ can_gas <- canadian_gas |>
 has_gaps(can_gas)
 
 head(can_gas)
+
+#2.6
+can_gas_recent <- can_gas |>
+  filter(Month >= yearmonth("1990 Jan"))
+
+head(can_gas_recent)
+
+can_gas_recent <- can_gas_recent |>
+  mutate(year    = year(Month),
+         month   = month(Month, label = TRUE),
+         quarter = quarter(Month))
+
+can_gas_recent |>
+  as_tibble() |>
+  group_by(month) |>
+  summarize(avg_volume = mean(Volume))
+
+can_gas_recent |>
+  mutate(next_month           = Month + 1,
+         same_month_last_year = Month - 12) |>
+  head()
+
+can_gas_q <- can_gas |>
+  filter(Month <= yearmonth("2004 Dec")) |>
+  index_by(Quarter = yearquarter(Month)) |>
+  summarize(Volume = sum(Volume))
+
+head(can_gas_q)
+
+can_gas_q |> autoplot(Volume)
+
+#2.7
+retail_ts |> autoplot(sales)
+
+retail_ts |>
+  autoplot(sales) +
+  labs(
+    title = "U.S. Retail and Food Services Sales",
+    subtitle = "Seasonally adjusted vs. not seasonally adjusted",
+    x = NULL, y = "Millions of dollars", color = NULL
+  ) +
+  theme_minimal()
+
+can_gas |>
+  autoplot(Volume) +
+  labs(
+    title = "Monthly Natural Gas Production in Canada",
+    x = NULL, y = "Billions of Cubic Meters", color = NULL
+  ) +
+  theme_minimal()
+
+can_gas |>
+  autoplot(Volume) +
+  geom_smooth()
+  labs(
+    title = "Monthly Natural Gas Production in Canada",
+    x = NULL, y = "Billions of Cubic Meters", color = NULL
+  ) +
+  theme_minimal()
+
+#3.1
+can_gas |>
+  mutate(log_volume = log(Volume))
+
+  
+  
+  
+
